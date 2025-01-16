@@ -1,3 +1,5 @@
+# Docker Commands
+
 1.	View running containers
 ```yml
 docker ps
@@ -142,3 +144,68 @@ sudo docker run -it --rm -v /var/rk/one:/rk -w /rk ubuntu
 
 # Above mentioned command will map the drive
 ```
+
+# Docker Network
+
+22.	Create a New Network
+```
+# myNewNetwork is the name of the Network created with the Subnet range of 192.168.1.0/24
+sudo docker network create -d bridge --subnet 192.168.1.0/24  myNewNetwork
+```
+
+23.	Attach a Network to the Container. 
+```
+# Web01 Container was created and attached with myNewNetwork. Prerequisite is to create the Network before we run this command. 
+sudo docker run -it --name web01 --network myNewNetwork ubuntu
+```
+
+24.	Assign a specific IP Address to the new Container. 
+```
+# vnet01 is the name of an existing Network and --ip is to assign a specific IP to the container.
+docker run -itd --name web05 --network vnet01 --ip 192.168.2.100 ubuntu
+```
+
+25.	Connect a VNET and assign a specific IP to the existing Container.
+```
+# vnet02 is the existing Network and c59 is the Container ID, --ip is the IP Address we wanted to assign to the Container. 
+docker network connect vnet02 --ip 192.168.3.100 c59
+```
+
+26.	How to Check the Stats of a Container
+```
+# Below mentioned command will show the stats of all the Containers. For a particular container we can give the container id.
+sudo docker stats
+
+sudo docker system events
+```
+
+27.	How to assign the CPU and Memory to the Container. 
+```
+# below mentioned command will create a container with 2 CPUs and 2 GB of Memory.
+sudo docker run -itd --cpus=2 --memory=”2gb” ubuntu
+```
+
+28.	How to create multiple Containers using for loop.
+```
+# below mentioned for loop will be used to create 5 containers with the name of Web1.. Web5. Similarly we can use the commands to stop or remove the Containers. 
+
+for i in {1..5}; do
+  docker run -d --name Web$i ubuntu
+done
+```
+
+29.	How to Create MySQL Container
+```
+docker run -itd -e MYSQL_ROOT_PASSWORD=mypassword mysql
+
+docker exec -it 416 /bin/bash
+
+mysql -u root -p
+```
+
+30.	Use the running container to create an Image. 
+```
+# 497 is the container id and myubuntu01 is the name of the image that we want to create. 
+docker commit 497  myubuntu01
+```
+
